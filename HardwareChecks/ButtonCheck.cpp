@@ -29,20 +29,22 @@ int main(){
 	DisableWatchDog();
 	PORTSetup();
 	while(1){
+		uint8_t Flag1 = 0x00;
+		uint8_t Flag2 = 0x00;
 		if(PTC->PDIR & 1<<BTN1){
 			PTD->PCOR |= 1<<LEDG;
-			Flag1 = 1;
+			Flag1 = 0x01;
 		} else{
 			PTD->PSOR |= 1<<LEDG;
-			Flag1 = 0;
+			Flag1 = 0x00;
 		}
 
 		if(PTC->PDIR & 1<<BTN1){
 			PTD->PCOR |= 1<<LEDB;
-			Flag2 = 1;
+			Flag2 = 0x01;
 		} else{
-		PTD->PSOR |= 1<<LEDB;
-		Flag2 = 0;
+			PTD->PSOR |= 1<<LEDB;
+			Flag2 = 0x00;
 		}
 
 		if(Flag1 & Flag2){
