@@ -7,5 +7,7 @@ void DisableWatchDog(){
 }
 
 void PORTSetup(){
-  PCC->PCC[
+	PCC->nPCC[74]=0x40000000;
+	PCC->nPCC[75]=0x40000000;
+	
 }
