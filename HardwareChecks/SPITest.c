@@ -45,4 +45,10 @@ void LPSInitialization(void){
 	LPSPI1->CCR = 0x04090808;			/*- SCK Clock Settings -*/
 	LPSPI1->FCR = 0x00000003;			/*- FIFO Controlled Register -*/
 	LPSPI1->CR = 0x00000009;			/*- Enabling LPSPI -*/
+
+	PCC->PCCn[74] = 0xC0000000;			/*- PCC PORT B -*/
+	PORTB->PCR[14] |= 0x00000300;			/*- PTB-14 As LPSPI-SCK -*/
+	PORTB->PCR[15] |= 0x00000300;			/*- PTB-15 As LPSPI-SIN -*/
+	PORTB->PCR[16] |= 0x00000300;			/*- PTB-16 As LPSPI-SOUT -*/
+	PORTB->PCR[17] |= 0x00000300;			/*- PTB-17 As LPSPI-PCS3 -*/
 }
