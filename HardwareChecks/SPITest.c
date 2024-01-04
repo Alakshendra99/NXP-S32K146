@@ -52,3 +52,15 @@ void LPSInitialization(void){
 	PORTB->PCR[16] |= 0x00000300;			/*- PTB-16 As LPSPI-SOUT -*/
 	PORTB->PCR[17] |= 0x00000300;			/*- PTB-17 As LPSPI-PCS3 -*/
 }
+void LPSPI_TX(uint32_t Data){
+	while(!(LPSPI1->SR & 0x00000001));		/*- Waiting For Transmit Data Request -*/
+	LPSPI1->TDR = Data;				/*- Writing Data In Transmit Data Register -*/
+	LPSPI1->SR |= 0x00000001;			/*- Clear TDF Flag -*/
+}
+uint32_t LPSPI_RX(void){
+	uint32_t Data = 0x00000000;
+	while(!(LPSPI1->SR & 0x00000002));		/*- Waiting For Recieve Data Ready -*/
+	Data = LPSPI1->RDR				/*- Writing Data In Transmit Data Register -*/
+	LPSPI1->SR |= 0x00000002;			/*- Clear RDF Flag -*/
+	return Data;
+}
