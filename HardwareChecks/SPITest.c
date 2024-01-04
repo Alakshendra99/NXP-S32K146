@@ -1,9 +1,11 @@
-void DisableWatchDog(){
+#include<S32K146.h>
+
+void DisableWatchDog(void){
 	WDOG->CNT = 0xD928C520;				/*- Unlocking Sequence of Watchdog -*/
 	WDOG->TOVAL = 0x0000FFFF;			/*- Setting Maximum Value of Watchdog -*/
 	WDOG->CS = 0x00002100;				/*- Disabling Watchdog Timer -*/
 }
-void ClocksSOSC(){
+void ClocksSOSC(void){
 	SCG->SOSCDIV = 0x00000101;			/*- SOSC Clock Dividers -*/
 	SCG->SOSCCFG = 0x00000024;			/*- SOSC Clock Selector -*/
 
@@ -14,7 +16,7 @@ void ClocksSOSC(){
 	SCG->SOSCCSR = 0x00000001;			/*- SOSC Clock Enabled -*/
 	while(!(SCG->SOSCCSR & 0x01000000));		/*- SOSC Clock Validation -*/
 }
-void ClocksSPLL(){
+void ClocksSPLL(void){
 	while(SCG->SPLLCSR & 0x00800000){		/*- Chechking If SPLLCSR is Unlocked -*/
 		SCG->SPLLCSR = 0x00000000;		/*- Disabling SPLL -*/
 	}
@@ -29,4 +31,18 @@ void ClocksSPLL(){
 	while(SCG->CSR != 0x06010032){			/*- System Clock Validation -*/
 		SCG->RCCR = 0x06010032;			/*- System Clock Setting -*/
 	}
+}
+void LPSInitialization(void){
+	PCC->PCCn[45] = 0x00000000;			/*- Disabling PCC -*/
+	PCC->PCCn[45] = 0xC6000000;			/*- Enabling PCC With SPLL_DIV2 -*/
+
+	LPSPI1->CR = 0x00000000;			/*- Disabling LPSPI -*/
+	LPSPI1->IER = 0x00000000;			/*- Disabling LPSPI Interrupts -*/
+	LPSPI1->DER = 0x00000000;			/*- Disabling LPSPI DMA -*/
+	LPSPI1->CFGR0 = 0x00000000;
+	LPSPI1->CFGR1 = 0x00000001;			/*- Enabling Master Mode -*/
+	LPSPI1->TCR = 0x5300000F;			/*- Transmit Settings -*/
+	LPSPI1->CCR = 0x04090808;			/*- SCK Clock Settings -*/
+	LPSPI1->FCR = 0x00000003;			/*- FIFO Controlled Register -*/
+	LPSPI1->CR = 0x00000009;			/*- Enabling LPSPI -*/
 }
