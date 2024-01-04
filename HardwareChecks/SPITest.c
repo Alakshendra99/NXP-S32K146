@@ -32,7 +32,7 @@ void ClocksSPLL(void){
 		SCG->RCCR = 0x06010032;			/*- System Clock Setting -*/
 	}
 }
-void LPSInitialization(void){
+void LPSPIInitialization(void){
 	PCC->PCCn[45] = 0x00000000;			/*- Disabling PCC -*/
 	PCC->PCCn[45] = 0xC6000000;			/*- Enabling PCC With SPLL_DIV2 -*/
 
@@ -63,4 +63,21 @@ uint32_t LPSPI_RX(void){
 	Data = LPSPI1->RDR				/*- Writing Data In Transmit Data Register -*/
 	LPSPI1->SR |= 0x00000002;			/*- Clear RDF Flag -*/
 	return Data;
+}
+
+
+int main(void){
+	DisableWatchDog();
+	ClocksSOSC();
+	ClocksSPLL();
+	LPSPIInitialization();
+
+	uint32_t DataTX = 0xFEDCBA01;
+	uint32_t DataRX = 0x00000000;
+	while(1){
+		LPSPI_TX(DataTX);
+		DataRX = LPSPI_RX();
+
+		DataTX += 0x00000001;
+	}
 }
